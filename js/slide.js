@@ -50,7 +50,7 @@ export default class Slide {
     this.moveSlide(finalPosition);
   }
 
-  onEnd() {
+  onEnd(event) {
     const movetype = event.type === "mouseup" ? "mousemove" : "touchmove";
     this.wrapper.removeEventListener(movetype, this.onMove);
     this.dist.finalPosition = this.dist.movePosition;
@@ -69,9 +69,50 @@ export default class Slide {
     this.onEnd = this.onEnd.bind(this);
   }
 
+  //SLIDES CONFIG
+
+  //calcular a posição do slide para calcular o centro
+  slidePosition(slide) {
+    // calculo: item menos a margem dividido por dois para dividir no centro
+    const margin = (this.wrapper.offsetWidth - slide.offsetWidth) / 2;
+    // posição do slide menos a margem calculada ( menos na frente para mostrar a posição correta)
+    return -(slide.offsetLeft - margin);
+  }
+
+  slidesConfig() {
+    this.slideArray = [...this.slide.children].map((element) => {
+      const position = this.slidePosition(element);
+      return {
+        element,
+        position,
+      };
+    });
+  }
+
+  slidesIndexNav(index) {
+    const last = this.slideArray.length - 1;
+
+    this.index = {
+      //verificando se o primeiro índice é zero, se for, ele dá falsy
+      prev: index ? index - 1 : undefined,
+      active: index,
+      next: index === last ? undefined : index + 1,
+    };
+  }
+
+  //mover slide de acordo com a slidePosition
+  changeSlide(index) {
+    const activeSlide = this.slideArray[index];
+
+    this.moveSlide(activeSlide.position);
+    this.slidesIndexNav(index);
+    this.dist.finalPosition = activeSlide.position;
+  }
+
   init() {
     this.bindEvents();
     this.addSlideEvents();
+    this.slidesConfig();
 
     return this;
   }
