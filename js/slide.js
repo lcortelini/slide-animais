@@ -97,6 +97,7 @@ export default class Slide {
   slidesConfig() {
     this.slideArray = [...this.slide.children].map((element) => {
       const position = this.slidePosition(element);
+
       return {
         position,
         element,
@@ -118,7 +119,6 @@ export default class Slide {
   //mover slide de acordo com a slidePosition
   changeSlide(index) {
     const activeSlide = this.slideArray[index];
-
     this.moveSlide(activeSlide.position);
     this.slidesIndexNav(index);
     this.dist.finalPosition = activeSlide.position;
@@ -168,6 +168,7 @@ export default class Slide {
     this.transition(true);
     this.addSlideEvents();
     this.slidesConfig();
+    this.changeSlide(0);
     this.addResizeEvent();
 
     return this;
